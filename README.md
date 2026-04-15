@@ -81,10 +81,10 @@ Or create `~/.stillrunning/config.json` manually:
 
 | Feature | Free | With Token |
 |---------|------|------------|
+| Scans per day | 50 | Unlimited |
 | Known malicious packages | Blocked | Blocked |
 | Threat feed database | Checked | Checked |
 | AI analysis of unknown packages | - | Yes |
-| Scans per day | Unlimited (cached) | 100-10000 |
 
 Get a token at [stillrunning.io/pricing](https://stillrunning.io/pricing)
 
