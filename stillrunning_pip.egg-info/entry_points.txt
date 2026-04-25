@@ -1,2 +1,0 @@
-[console_scripts]
-stillrunning-pip = stillrunning_pip.cli:main

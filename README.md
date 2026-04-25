@@ -1,113 +1,85 @@
 # stillrunning-pip
 
-Secure pip wrapper that scans packages for supply chain attacks before installing.
+> The zero-config pip wrapper that catches malicious packages before they install.
+> Try it in 5 seconds. No setup, no signup, no config.
 
-[![PyPI version](https://badge.fury.io/py/stillrunning-pip.svg)](https://pypi.org/project/stillrunning-pip/)
-[![stillrunning](https://stillrunning.io/badge/protected)](https://stillrunning.io)
+[![PyPI](https://img.shields.io/pypi/v/stillrunning-pip)](https://pypi.org/project/stillrunning-pip/)
+[![Threats blocked](https://stillrunning.io/badge/protected)](https://stillrunning.io/security-advisories)
 
-## Installation
+## Try it now
 
 ```bash
 pip install stillrunning-pip
+stillrunning-pip install requests
 ```
 
-## Usage
+That's it. Every package you install is now checked against [200,000+ verified malicious packages](https://stillrunning.io/security-advisories) from OSV.dev, GitHub Advisory, and 6 other threat intelligence sources, updated nightly.
 
-Use `stillrunning-pip` instead of `pip`:
+## What you get for free
+
+- 10 scans per day per IP, no signup required
+- Blocks confirmed-malicious packages automatically
+- Warns about suspicious packages
+- Works with `pip install <pkg>` and `pip install -r requirements.txt`
+- 5-second installs, 5-second scans
+
+## Replace pip globally (optional)
 
 ```bash
-stillrunning-pip install requests flask
-stillrunning-pip install -r requirements.txt
-```
-
-Or create an alias:
-
-```bash
-# Add to ~/.bashrc or ~/.zshrc
 alias pip='stillrunning-pip'
 ```
 
-## Setup
+Add to `~/.bashrc` or `~/.zshrc` for every install in every project to be scanned.
 
-Configure your token and preferences:
+## Hit the rate limit?
 
-```bash
-stillrunning-pip --setup
-```
-
-Or create `~/.stillrunning/config.json` manually:
-
-```json
-{
-  "token": "sr_your_token_here",
-  "block_dangerous": true,
-  "warn_suspicious": true,
-  "offline_mode": "warn"
-}
-```
-
-## Example Output
-
-```
-🛡️  stillrunning security scan
-   Checking 5 package(s)...
-
-  ✅ CLEAN      requests==2.31.0
-  ✅ CLEAN      flask==2.3.0
-  ⚠️  WARNING    sketchy-lib==1.0.0
-     → Obfuscated code patterns detected
-  🚫 BLOCKED    evil-pkg==0.1.0
-     → Known malicious package (reverse shell)
-
-❌ Installation blocked
-   1 dangerous package(s) detected
-```
-
-## Configuration Options
-
-| Option | Default | Description |
-|--------|---------|-------------|
-| `token` | `""` | stillrunning.io API token for AI scanning |
-| `block_dangerous` | `true` | Block installs for dangerous packages |
-| `warn_suspicious` | `true` | Show warnings for suspicious packages |
-| `offline_mode` | `"warn"` | Behavior when API unreachable: `warn`, `block`, `allow` |
-| `timeout` | `30` | API timeout in seconds |
-
-## Environment Variables
-
-- `STILLRUNNING_TOKEN` — Override token from config
-
-## Free vs Paid
-
-| Feature | Free | With Token |
-|---------|------|------------|
-| Scans per day | 50 | Unlimited |
-| Known malicious packages | Blocked | Blocked |
-| Threat feed database | Checked | Checked |
-| AI analysis of unknown packages | - | Yes |
-
-Get a token at [stillrunning.io/pricing](https://stillrunning.io/pricing)
-
-## What It Detects
-
-- **Known malicious packages** — Packages in our threat database (DPRK campaigns, typosquats, backdoors)
-- **Typosquatting** — Packages with names similar to popular packages
-- **AI-flagged packages** — Obfuscated code, credential harvesting, reverse shells
-
-## Bypass (Not Recommended)
-
-To bypass scanning for a single install:
+Get the full `stillrunning` package — covers pip, uv, poetry, pdm, pipenv, conda, pixi, npm, bun, pnpm, with unlimited scans, AI analysis of unknown packages, and import-time protection:
 
 ```bash
-pip install <package>  # Use pip directly
+pip install stillrunning
 ```
 
-## Uninstall
+[stillrunning.io/pricing](https://stillrunning.io/pricing) for paid tiers.
+
+## How it works
+
+Before each install, stillrunning-pip queries the public API:
+
+```
+GET https://stillrunning.io/api/check-package?name=<pkg>
+```
+
+If the package is on the verified blocklist, the install is halted with a clear message. Every block traces back to a public security advisory you can verify yourself at [stillrunning.io/security-advisories](https://stillrunning.io/security-advisories).
+
+## Power user features
+
+Set `STILLRUNNING_TOKEN` to unlock unlimited scans and AI analysis of unknown packages. Get a token at [stillrunning.io/pricing](https://stillrunning.io/pricing).
 
 ```bash
-pip uninstall stillrunning-pip
+export STILLRUNNING_TOKEN=sr_...
+stillrunning-pip install <pkg>
 ```
+
+## Bypass scanning
+
+If you need to install something stillrunning is blocking and you've verified it's safe:
+
+```bash
+pip install <package>
+```
+
+Just use vanilla pip directly. stillrunning-pip is opt-in via being the binary you call.
+
+## Relationship to stillrunning
+
+`stillrunning-pip` is the simplest member of the [stillrunning](https://github.com/johhnyg/stillrunning) family. It does one thing: scans pip installs against the verified threat database.
+
+For broader coverage (uv, poetry, pdm, pipenv, conda, pixi, npm, bun, pnpm), import-time protection, MCP server for Claude Code, GitHub Action for CI, and unlimited scans, install the main package: `pip install stillrunning`.
 
 ## License
 
 MIT
+
+---
+
+[stillrunning.io](https://stillrunning.io) | [@bit_bot9000](https://x.com/bit_bot9000)
